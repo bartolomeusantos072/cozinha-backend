@@ -12,6 +12,7 @@ app.use(express.json());
 // POST /votacao - registra um voto
 app.post('/votacao', async (req: Request, res: Response) => {
   const { id_prato, voto, ip_usuario } = req.body;
+  console.log(req.body);
 
   if (typeof id_prato !== 'number' || typeof voto !== 'boolean' || typeof ip_usuario !== 'string') {
     return res.status(400).json({ error: 'Campos inválidos' });
@@ -48,17 +49,30 @@ app.get('/votacao', async (req: Request, res: Response) => {
         COUNT(CASE WHEN v.voto = TRUE THEN 1 END) AS votos_sim,
         COUNT(CASE WHEN v.voto = FALSE THEN 1 END) AS votos_nao
       FROM prato_tb p
-      LEFT JOIN votacao_tb v ON p.id_prato = v.id_prato AND DATE(v.data_voto) = CURRENT_DATE
+      LEFT JOIN votacao_tb v
+        ON p.id_prato = v.id_prato
+        AND DATE(v.data_voto) = CURRENT_DATE
+      WHERE DATE(p.dia) = CURRENT_DATE
       GROUP BY p.id_prato, p.principal
       ORDER BY p.id_prato
     `);
 
-    return res.json(resultado);
+    // Converter BigInt para Number
+    const resultadoConvertido = resultado.map(r => ({
+      id_prato: r.id_prato,
+      principal: r.principal,
+      votos_sim: Number(r.votos_sim),
+      votos_nao: Number(r.votos_nao),
+    }));
+
+    console.log("RESULTADO", resultadoConvertido);
+    return res.json(resultadoConvertido);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: 'Erro ao buscar resultados' });
   }
 });
+
 
 // GET /pratos - retorna todos os pratos
 app.get('/pratos', async (req: Request, res: Response) => {
