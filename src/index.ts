@@ -3,9 +3,9 @@ import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
 
 // Importação das rotas
-import authRoutes from './routes/auth.routes';
-import pratoRoutes from './routes/prato.routes';
-import votacaoRoutes from './routes/votacao.routes';
+import authRoutes from './routes/authRoutes';
+import pratoRoutes from './routes/pratoRoutes';
+import votacaoRoutes from './routes/votacaoRoutes';
 
 const app = express();
 const prisma = new PrismaClient();
