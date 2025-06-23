@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
+import { PrismaClient, Prisma } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -14,12 +13,12 @@ export const registrarVoto = async (req: Request, res: Response) => {
         voto,
         data_voto: new Date(),
         ip_usuario,
-      },
+      }
     });
 
     return res.json({ message: 'Voto registrado com sucesso', voto: votoCriado });
   } catch (error: any) {
-    if (error instanceof PrismaClientKnownRequestError && error.code === 'P2002') {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
       return res.status(409).json({ error: 'Você já votou neste prato hoje' });
     }
 
@@ -37,7 +36,7 @@ interface ResultadoPrato {
 
 export const obterResultados = async (_req: Request, res: Response) => {
   try {
-    const resultado = (await prisma.$queryRawUnsafe(`
+    const resultado = await prisma.$queryRawUnsafe(`
       SELECT
         p.id_prato,
         p.principal,
@@ -50,9 +49,9 @@ export const obterResultados = async (_req: Request, res: Response) => {
       WHERE DATE(p.dia) = CURRENT_DATE
       GROUP BY p.id_prato, p.principal
       ORDER BY p.id_prato
-    `)) as ResultadoPrato[];
+    `) as ResultadoPrato[];
 
-    const resultadoConvertido = resultado.map((r) => ({
+    const resultadoConvertido = resultado.map(r => ({
       id_prato: r.id_prato,
       principal: r.principal,
       votos_sim: Number(r.votos_sim),
