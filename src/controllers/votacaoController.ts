@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
-import { PrismaClient, Prisma } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 const prisma = new PrismaClient();
 
@@ -13,12 +14,12 @@ export const registrarVoto = async (req: Request, res: Response) => {
         voto,
         data_voto: new Date(),
         ip_usuario,
-      }
+      },
     });
 
     return res.json({ message: 'Voto registrado com sucesso', voto: votoCriado });
   } catch (error: any) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+    if (error instanceof PrismaClientKnownRequestError && error.code === 'P2002') {
       return res.status(409).json({ error: 'Você já votou neste prato hoje' });
     }
 
@@ -26,6 +27,7 @@ export const registrarVoto = async (req: Request, res: Response) => {
     return res.status(500).json({ error: 'Erro ao registrar voto' });
   }
 };
+
 
 interface ResultadoPrato {
   id_prato: number;
