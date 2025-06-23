@@ -2,20 +2,13 @@
 FROM node:20-alpine AS build
 
 WORKDIR /app
-
 COPY package*.json ./
-
 RUN npm install
-
 COPY . .
-
-RUN cp /etc/secrets/.env .env
-
 RUN npm run build
 
 # Stage 2: Run
 FROM node:20-alpine
-
 WORKDIR /app
 
 COPY --from=build /app/dist ./dist
@@ -25,6 +18,9 @@ COPY --from=build /app/prisma ./prisma
 COPY --from=build /app/entrypoint.sh ./entrypoint.sh
 
 RUN chmod +x ./entrypoint.sh
+
+# Aqui o secret file já existe
+RUN cp /etc/secrets/.env .env
 
 ENV NODE_ENV=production
 EXPOSE 3000
