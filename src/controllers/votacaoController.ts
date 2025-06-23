@@ -29,9 +29,16 @@ export const registrarVoto = async (req: Request, res: Response) => {
   }
 };
 
+interface ResultadoPrato {
+  id_prato: number;
+  principal: string;
+  votos_sim: number;
+  votos_nao: number;
+}
+
 export const obterResultados = async (_req: Request, res: Response) => {
   try {
-    const resultado = await prisma.$queryRawUnsafe<any[]>(`
+    const resultado = await prisma.$queryRawUnsafe(`
       SELECT
         p.id_prato,
         p.principal,
@@ -44,7 +51,7 @@ export const obterResultados = async (_req: Request, res: Response) => {
       WHERE DATE(p.dia) = CURRENT_DATE
       GROUP BY p.id_prato, p.principal
       ORDER BY p.id_prato
-    `);
+    `) as ResultadoPrato[];
 
     const resultadoConvertido = resultado.map(r => ({
       id_prato: r.id_prato,
@@ -59,3 +66,4 @@ export const obterResultados = async (_req: Request, res: Response) => {
     return res.status(500).json({ error: 'Erro ao buscar resultados' });
   }
 };
+
