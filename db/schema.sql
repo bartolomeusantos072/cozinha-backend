@@ -1,6 +1,5 @@
  -- CUIDADO: Isso apaga todo o banco atual!
-DROP DATABASE IF EXISTS cantina;
-CREATE DATABASE cantina;
+
 
 -- Tabela de Cozinheiras
 CREATE TABLE public.cozinheira_tb (
