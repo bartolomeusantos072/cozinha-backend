@@ -3,12 +3,12 @@
     "target": "ES6",
     "module": "commonjs",
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": ".",          // mudar para a raiz do projeto
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "prisma/**/*.ts"],  // incluir a pasta prisma
   "exclude": ["node_modules", "src/tests/**/*.ts"]
 }
