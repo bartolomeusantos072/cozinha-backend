@@ -1,5 +1,12 @@
 #!/bin/sh
 
+echo "Copying secret .env file if exists..."
+if [ -f /etc/secrets/.env ]; then
+  cp /etc/secrets/.env .env
+else
+  echo "No secret .env file found."
+fi
+
 echo "Running Prisma generate..."
 npx prisma generate
 
