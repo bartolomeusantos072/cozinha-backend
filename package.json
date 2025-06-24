@@ -8,8 +8,8 @@
     "dev": "ts-node-dev src/index.ts",
     "build": "tsc"
   },
-   "prisma": {
-   "seed": "ts-node prisma/seed.ts"
+  "prisma": {
+    "seed": "node dist/prisma/seed.js"
   },
   "dependencies": {
     "@prisma/client": "^5.13.0",
