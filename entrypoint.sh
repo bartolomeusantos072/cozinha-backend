@@ -7,6 +7,9 @@ else
   echo "No secret .env file found."
 fi
 
+echo "Building project..."
+npm run build
+
 echo "Running Prisma generate..."
 npx prisma generate
 
