@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const pratoController_1 = require("../controllers/pratoController");
+const router = (0, express_1.Router)();
+router.post('/pratos', pratoController_1.criarPrato);
+router.get('/pratos', pratoController_1.listarTodosPratos);
+router.get('/pratos/usuario/:id_usuario', pratoController_1.listarPratosPorUsuario);
+router.put('/pratos/:id', pratoController_1.atualizarPrato);
+router.delete('/pratos/:id', pratoController_1.deletarPrato);
+router.get('/pratos/buscar', pratoController_1.buscarPratosComFiltro);
+exports.default = router;
