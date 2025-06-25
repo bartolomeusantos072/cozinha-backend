@@ -1,31 +1,36 @@
-# Imagem base leve com Node.js
-FROM node:20-slim
+# Stage 1: Build
+FROM node:20-alpine AS build
 
-# Adiciona utilitários necessários
-RUN apt-get update && apt-get install -y \
-  curl \
-  bash \
-  postgresql-client \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/*
-
-# Define o diretório de trabalho
 WORKDIR /app
 
-# Copia apenas arquivos de dependências
+# Instala libs necessárias
+RUN apk add --no-cache libc6-compat openssl
+
 COPY package*.json tsconfig.json ./
 
-# Instala dependências
-RUN yarn install
+RUN npm install
 
-# Copia o restante do código, incluindo schema.prisma e pasta prisma/
 COPY . .
 
-# Compila a aplicação
-#RUN yarn build
+RUN npm run build
 
-# Expõe a porta usada pela aplicação
+# Stage 2: Run
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Instala libs necessárias para rodar Prisma
+RUN apk add --no-cache libc6-compat openssl
+
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/package.json ./
+COPY --from=build /app/prisma ./prisma
+COPY --from=build /app/entrypoint.sh ./entrypoint.sh
+
+RUN chmod +x ./entrypoint.sh
+
+ENV NODE_ENV=production
 EXPOSE 3000
 
-# Comando padrão para iniciar o app
-CMD ["npm", "start"]
+CMD ["./entrypoint.sh"]
