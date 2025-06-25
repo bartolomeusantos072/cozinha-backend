@@ -89,22 +89,45 @@ app.listen(port, () => {
 });
 EOF
 
-
-
 echo "🎉 Estrutura criada com sucesso! Rode 'yarn dev' para iniciar o servidor."
-#sudo docker compose up -d db
-#sudo docker exec -i postgres-db psql -U postgres -d cantina < db/schema.sql
-#sudo docker compose up --build
-#sudo docker exec -it backend-app npx prisma db seed
 
-# 
-#sudo docker exec -it backend-app npx prisma db pull 
-#sudo docker exec -it backend-app npx prisma generate
-#sudo docker exec -it backend-app npx prisma migrate reset
+#DESENVOLVIMENTO
+# Iniciar todos os serviços do ambiente de desenvolvimento (app + banco)
+docker compose -f docker-compose.dev.yml up
 
-#iniciar somente o banco de dados
+# Buildar e subir os containers para desenvolvimento (com rebuild)
+# sudo docker compose -f docker-compose.dev.yml up --build
 
-#acessar banco de dados
-#sudo docker exec -it postgres-db psql -U postgres -d cantina entrar no banco de dados
-# espera alguns segundos até o Postgres estar pronto
-#sudo docker compose up --build app
+# Seed de dados no container da aplicação (rodar script de seed)
+# sudo docker exec -it backend-app npx prisma db seed
+
+# Sincronizar schema com banco (puxar estrutura do banco para schema.prisma)
+# sudo docker exec -it backend-app npx prisma db pull
+
+# Gerar Prisma Client
+# sudo docker exec -it backend-app npx prisma generate
+
+# Resetar migrações (apaga dados e recria tudo) - só para desenvolvimento
+# sudo docker exec -it backend-app npx prisma migrate reset
+
+# Iniciar somente o banco de dados
+# sudo docker compose -f docker-compose.dev.yml up db
+
+# Acessar o banco de dados PostgreSQL no container
+# sudo docker exec -it postgres-db psql -U postgres -d cantina
+
+# Esperar alguns segundos para o Postgres ficar pronto antes de subir app
+# sudo docker compose -f docker-compose.dev.yml up --build app
+
+#PRODUCAO
+# Iniciar a aplicação em produção (normalmente apenas o serviço app, sem banco local)
+docker compose -f docker-compose.yml up
+
+# Build e deploy em produção
+# sudo docker compose -f docker-compose.yml up --build
+
+# Importar schema manualmente no banco externo (exemplo: via psql)
+# sudo docker exec -i postgres-db psql -U postgres -d cantina < db/schema.sql
+
+# Aplicar migrações no banco remoto via prisma migrate deploy
+# sudo docker exec -it backend-app npx prisma migrate deploy
