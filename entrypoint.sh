@@ -1,4 +1,5 @@
 #!/bin/sh
+set -e
 
 echo "Copying secret .env file if exists..."
 if [ -f /etc/secrets/.env ]; then
