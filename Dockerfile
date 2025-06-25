@@ -6,7 +6,7 @@ WORKDIR /app
 # Instala libs necessárias
 RUN apk add --no-cache libc6-compat openssl
 
-COPY package*.json tsconfig.json ./
+COPY package*.json tsconfig.build.json ./
 
 RUN npm install
 
