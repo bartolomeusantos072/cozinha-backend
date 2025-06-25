@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app
 
 # Copia apenas arquivos de dependências
-COPY package*.json ./
+COPY package*.json tsconfig.json ./
 
 # Instala dependências
 RUN yarn install
@@ -28,4 +28,4 @@ COPY . .
 EXPOSE 3000
 
 # Comando padrão para iniciar o app
-CMD ["yarn", "start"]
+CMD ["npm", "start"]

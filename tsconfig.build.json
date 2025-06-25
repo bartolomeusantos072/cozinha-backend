@@ -3,6 +3,6 @@
   "compilerOptions": {
     "outDir": "./dist"
   },
-  "include": ["src/**/*.ts", "prisma/**/*.ts"],    // <--- adicionar prisma aqui
+  "include": ["src/**/*.ts", "prisma/**/*.ts"], 
   "exclude": ["node_modules", "src/tests/**/*.ts"]
 }
